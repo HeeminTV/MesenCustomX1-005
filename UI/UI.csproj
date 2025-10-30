@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Nullable>enable</Nullable>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
@@ -34,7 +34,7 @@
   </PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 	  <OutputPath>$(SolutionDir)\bin\$(RuntimeIdentifier)\Release\</OutputPath>
-	  <Optimize>false</Optimize>
+	  <Optimize>False</Optimize>
 	  <DefineConstants>DEBUG</DefineConstants>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(OptimizeUi)'=='true'">
@@ -97,6 +97,8 @@
 		<RestoreSources>
 			https://nuget-feed-nightly.avaloniaui.net/v3/index.json;https://api.nuget.org/v3/index.json
 		</RestoreSources>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<UseWindowsForms>False</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
 		<TrimmerRootAssembly Include="Mesen" />

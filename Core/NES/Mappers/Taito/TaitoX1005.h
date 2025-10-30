@@ -1,6 +1,8 @@
 #pragma once
 #include "pch.h"
 #include "NES/BaseMapper.h"
+#include "NES/NesCpu.h"
+#include "NES/Mappers/Audio/Sunsoft5bAudio.h"
 
 class TaitoX1005 : public BaseMapper
 {
@@ -12,6 +14,8 @@ private:
 	{
 		SetCpuMemoryMapping(0x7F00, 0x7FFF, 0, HasBattery() ? PrgMemoryType::SaveRam : PrgMemoryType::WorkRam, _ramPermission == 0xA3 ? MemoryAccessType::ReadWrite : MemoryAccessType::NoAccess);
 	}
+
+	unique_ptr<Sunsoft5bAudio> _audio;
 
 protected:
 	uint16_t GetPrgPageSize() override { return 0x2000; }
@@ -27,6 +31,8 @@ protected:
 	bool ForceSaveRamSize() override { return HasBattery(); }
 	bool ForceWorkRamSize() override { return !HasBattery(); }
 
+	bool EnableCpuClockHook() override { return true; }
+
 	void InitMapper() override
 	{
 		_ramPermission = 0;
@@ -34,6 +40,10 @@ protected:
 		SelectPrgPage(3, -1);
 
 		UpdateRamAccess();
+
+		_audio.reset(new Sunsoft5bAudio(_console));
+
+		AddRegisterRange(0x6000, 0x6FFF, MemoryOperation::Write);
 	}
 
 	void WriteRam(uint16_t addr, uint8_t value) override
@@ -95,20 +105,29 @@ protected:
 				SelectPrgPage(2, value);
 				break;
 		}
+
+		if ((addr & 0xF000) == 0x6000)
+			_audio->WriteRegister(addr & 0x01 ? 0xE000 : 0xC000, value);
 	}
 
-	void Serialize(Serializer& s) override
-	{
+	void Serialize(Serializer& s) override {
 		BaseMapper::Serialize(s);
 		SV(_ramPermission);
 		
 		if(!s.IsSaving()) {
 			UpdateRamAccess();
 		}
+
+		SV(_audio);
+	}
+
+	void ProcessCpuClock() override {
+		BaseProcessCpuClock();
+
+		_audio->Clock();
+		_audio->Clock();
 	}
 
 public:
-	TaitoX1005(bool alternateMirroring) : _alternateMirroring(alternateMirroring)
-	{
-	}
+	TaitoX1005(bool alternateMirroring) : _alternateMirroring(alternateMirroring) {}
 };

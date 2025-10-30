@@ -1,3 +1,15 @@
+# MesenCustomX1-005
+
+'MesenCustomX1-005' is my personal fork of Mesen to attach AY-3-8910 for an existing mapper, known as [Taito X1-005](https://www.nesdev.org/wiki/INES_Mapper_080).
+
+The AY-3-8910 isn't half-clocked, unlike Sunsoft 5B's internal core.
+
+The AY-3-8910 registers themselves are mapped at `$6000-$6FFF`, bit 0 directly controls `AY BDIR`.
+
+This fork contains better AY-3-8910 emulation as well. Supports both noise and envelopes now. (most likely brought from [0CC-FamiTracker](https://github.com/HertzDevil/0CC-FamiTracker/blob/master/Source/APU/S5B.cpp))
+
+***nd of MesenCustomX1-005's description***
+
 # Mesen
 
 Mesen is a multi-system emulator (NES, SNES, Game Boy, Game Boy Advance, PC Engine, SMS/Game Gear, WonderSwan) for Windows, Linux and macOS.  
